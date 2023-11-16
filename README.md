@@ -30,13 +30,32 @@ Livraison du Projet:
 
 
 ## Rules 
-points are updated from real games every week
-You'll start the game with 100 Milions $
-to create a team you have to peak 15 players : 2 goals keeper, 5 defenders, 5 middle fielders, 3 forwarders
-You can't select more than 3 players from the same teams
-only 11 of your player will "play" each week
+
+La Fantasy Premier League (FPL) est un jeu en ligne populaire qui permet aux fans de football de créer leur propre équipe de joueurs de la Premier League anglaise et de gagner des points en fonction des performances réelles de ces joueurs au cours de la saison. 
+
+1. *Composition de l'équipe :*
+   - Vous disposez d'un budget fixe pour sélectionner 15 joueurs (2 gardiens, 5 défenseurs, 5 milieux de terrain, et 3 attaquants).
+   - Vous pouvez avoir un maximum de 3 joueurs de la même équipe.
+
+2. *Budget :*
+   - Vous devez respecter un budget de 100 M£ pour sélectionner votre équipe. 
+
+3. *Capitaine et vice-capitaine :*
+   - Vous choisissez un capitaine qui gagne le double de points pour la journée sélectionnée.
+   - Si votre capitaine ne joue pas, le vice-capitaine reçoit le double de points à sa place.
+
+4. *Transferts :*
+   - Vous avez un transfert gratuit chaque semaine.
+
+5. *Points :*
+   - Les joueurs gagnent des points pour des actions telles que marquer des buts, effectuer des passes décisives, garder une feuille blanche (pour les gardiens et défenseurs), etc.
+   - Les joueurs peuvent perdre des points pour des actions négatives comme les cartons jaunes, les cartons rouges, etc.
+
+6. *Blessures et suspensions :*
+   - Les joueurs blessés ou suspendus peuvent être remplacés sans coûter de points de transfert, à condition que le remplaçant soit dans la même catégorie de joueur.
 
 
 
 
-Datas from 
+## Datas 
+https://github.com/vaastav/Fantasy-Premier-League/blob/master/data/2023-24/cleaned_players.csv
