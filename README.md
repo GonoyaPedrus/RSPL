@@ -27,3 +27,16 @@ Livraison du Projet:
 •	Un système de recommandation de joueurs fonctionnel pour la Fantasy Premier League.
 •	Documentation complète, y compris le code source, les explications des modèles et les résultats des tests.
 •	Présentation finale du projet.
+
+
+## Rules 
+points are updated from real games every week
+You'll start the game with 100 Milions $
+to create a team you have to peak 15 players : 2 goals keeper, 5 defenders, 5 middle fielders, 3 forwarders
+You can't select more than 3 players from the same teams
+only 11 of your player will "play" each week
+
+
+
+
+Datas from 
