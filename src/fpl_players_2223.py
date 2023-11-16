@@ -43,4 +43,4 @@ players = players[columns]
 
 players
 
-players.to_csv("players.csv", index=False)
+players.to_csv("../data/players_22_23.csv", index=False)
