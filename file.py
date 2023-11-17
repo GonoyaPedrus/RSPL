@@ -3,13 +3,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 # Exemple de données (à remplacer par vos propres données)
-data = {
-    'Joueur': ['Messi', 'Ronaldo', 'Neymar', 'Salah', 'Mbappé'],
-    'Position': ['Attaquant', 'Attaquant', 'Attaquant', 'Milieu', 'Attaquant'],
-    'Buts': [30, 28, 20, 22, 27],
-    'Passes': [10, 8, 15, 12, 10],
-    'CartonsJaunes': [2, 1, 3, 0, 1]
-}
+data = pd.read_csv('/Users/melusinecaillard/RSPL/data/2023-24/cleaned_players.csv')
 
 df = pd.DataFrame(data)
 
