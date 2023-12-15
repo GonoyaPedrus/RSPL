@@ -3,8 +3,26 @@
 <head>
     <title>Composition de l'équipe</title>
     <link href="{{ url_for('static', path='styles.css') }}" rel="stylesheet">
+    <style>
+        /* Ajout de styles pour le compteur */
+        .counter {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 14px;
+            margin: 5px;
+        }
+    </style>
 </head>
 <body>
+    <!-- Compteur affichant les totaux -->
+    <div class="counter">
+        <p>Total points: {{ total_points }}</p>
+        <p>Total value: {{ total_value }}</p>
+        <p>Semaine en cours: {{ week_num }}</p>
+    </div>
+
+    <!-- Reste du contenu -->
     <h2>Composition de l'équipe</h2>
     {% for position in ['FWD', 'MID', 'DEF', 'GK'] %}
         <h3>{{ position }}</h3>

@@ -46,8 +46,6 @@ def get_best_players(new_saison, dict_team, dict_max,cost ):
 
 def new_saison_player(new_saison,dict_team):
     list_player = os.listdir(f"../data/{new_saison}/players")
-
-    print(list_player)
     #map list_player for split by _ and get first and second name
     list_player = [player.split("_")[0] + " " + player.split("_")[1] for player in list_player]
     dict_index = {}
@@ -69,12 +67,40 @@ def new_saison_player(new_saison,dict_team):
     return dict_index    
 def get_weeks_of_player(dict_index,player, new_saison, week_num):
     list_player = os.listdir(f"../data/{new_saison}/players")
+
     try : 
         df = pd.read_csv(f"../data/{new_saison}/players/{list_player[dict_index[player]]}/gw.csv")
         return df
     except:
         print("player not in list")
         return False
+def get_team(dict_index,equipe, new_saison):
+    print("getting team")
+    print(dict_index)
+    df_id  = pd.read_csv(f"../data/{new_saison}/player_idlist.csv")
+    list_player = os.listdir(f"../data/{new_saison}/players")
+    df = pd.read_csv(f"../data/{new_saison}/players_raw.csv")
+    df_team = pd.read_csv(f"../data/{new_saison}/teams.csv")
+    print(df_team.columns)
+    dict_team = {}
+    for k, v in dict_index.items():
+    
+
+        player_id = list_player[v].split("_")[-1]
+
+        #get row of de_id where player_id is equal to player_id
+        df_tmp = df_id[df_id["id"] == int(player_id)]
+        first_name = df_tmp["first_name"].values[0]
+        second_name = df_tmp["second_name"].values[0]
+        #get row of df where first_name and second_name are equal to first_name and second_name
+        df_tmp_2 = df[(df["first_name"] == first_name) & (df["second_name"] == second_name)]
+        id_team = df_tmp_2["team"].values[0]
+        team_name = df_team[df_team["code"] == id_team]["name"].values[0]
+        dict_team[k] = team_name
+    return dict_team
+
+
+
 def get_stats(week_num,dict_index,dict_team, new_saison):
     dict_stats = {}
     for position,player in dict_team.items():
@@ -83,7 +109,7 @@ def get_stats(week_num,dict_index,dict_team, new_saison):
             if df is False:
                 return False
             else:
-                dict_stats[player] = [df["bps"].iloc[week_num],df["value"].iloc[week_num]]
+                dict_stats[player] = [df["total_points"].iloc[week_num],df["value"].iloc[week_num]]
     return dict_stats
 
 equipe, cost = get_cheapest_players(new_saison, dict_team)
@@ -93,7 +119,9 @@ dict_index =  new_saison_player(new_saison,dict_team)
 
 dict_stats = get_stats(0,dict_index,dict_team, new_saison)
 print(dict_stats)
-        
+#dict_team = get_team(dict_index,equipe, new_saison)
+#print(dict_team)
+get_team(dict_index,equipe, new_saison)        
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -104,9 +132,14 @@ async def get_equipe(request: Request):
 @app.get("/equipe/{week_num}")
 async def get_equipe(request: Request, week_num: int):
     dict_stats = get_stats(week_num, dict_index, dict_team, new_saison)
-
+    #count total points
+    total_points = 0
+    total_value = 0
+    for k, v in dict_stats.items():
+        total_points += v[0]
+        total_value += v[1]
     return templates.TemplateResponse(
-        "equipe_week.html", {"request": request, "equipe": equipe, "dict_stats": dict_stats}
+        "equipe_week.html", {"request": request, "equipe": equipe, "dict_stats": dict_stats,"total_points":total_points, "week_num":week_num, "total_value":total_value}
     )
 
 
