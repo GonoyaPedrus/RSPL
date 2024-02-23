@@ -95,8 +95,9 @@ def get_team(dict_index,equipe, new_saison):
         #get row of df where first_name and second_name are equal to first_name and second_name
         df_tmp_2 = df[(df["first_name"] == first_name) & (df["second_name"] == second_name)]
         id_team = df_tmp_2["team"].values[0]
-        team_name = df_team[df_team["code"] == id_team]["name"].values[0]
+        team_name = df_team[df_team["id"] == id_team]["name"].values[0]
         dict_team[k] = team_name
+    
     return dict_team
 
 
@@ -119,9 +120,10 @@ dict_index =  new_saison_player(new_saison,dict_team)
 
 dict_stats = get_stats(0,dict_index,dict_team, new_saison)
 print(dict_stats)
-#dict_team = get_team(dict_index,equipe, new_saison)
-#print(dict_team)
-get_team(dict_index,equipe, new_saison)        
+dict_team_by_player = get_team(dict_index,equipe, new_saison)
+
+print(dict_team_by_player)
+
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -135,11 +137,12 @@ async def get_equipe(request: Request, week_num: int):
     #count total points
     total_points = 0
     total_value = 0
+    print(dict_stats)
     for k, v in dict_stats.items():
         total_points += v[0]
         total_value += v[1]
     return templates.TemplateResponse(
-        "equipe_week.html", {"request": request, "equipe": equipe, "dict_stats": dict_stats,"total_points":total_points, "week_num":week_num, "total_value":total_value}
+        "equipe_week.html", {"request": request, "equipe": equipe, "dict_stats": dict_stats,"total_points":total_points, "week_num":week_num, "total_value":total_value, "dict_team":dict_team_by_player}
     )
 
 
