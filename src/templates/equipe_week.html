@@ -30,6 +30,7 @@
             {% for player, stats in dict_stats.items() if player in equipe[position] %}
                 <div class="card">
                     <p>{{ player }}</p>
+                    <p>{{dict_team[player]}}</p>
                     <p>{{ stats[0] }} points ; valeur : {{ stats[1] }}</p>
                 </div>
             {% endfor %}
