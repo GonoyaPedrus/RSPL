@@ -1,0 +1,45 @@
+/* Ajoutez ces règles CSS à votre fichier style_create.css */
+
+/* Réglez la disposition des colonnes pour qu'elles occupent l'espace disponible */
+.container-fluid {
+    display: flex;
+    flex-wrap: wrap;
+}
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 15px;
+  }
+.col-3 {
+    flex: 0 0 auto; /* Gardez la barre latérale à sa taille par défaut */
+}
+
+.col-9 {
+    flex: 1 1 auto; /* Permettez à la partie principale de remplir l'espace restant */
+}
+
+/* Ajustez la hauteur de la barre latérale pour correspondre à la hauteur de la fenêtre */
+.sidebar {
+    height: 100vh;
+    overflow-y: auto;
+}
+
+/* Ajoutez un espace à gauche pour l'équipe pour éviter de chevaucher la barre latérale */
+.team {
+    padding-left: 15px; /* Ajustez en fonction de la largeur de la barre latérale */
+}
+
+/* Ajustez la largeur de la barre latérale pour éviter le chevauchement de l'équipe */
+.sidebar {
+    flex-basis: 250px; /* Définissez la largeur de la barre latérale en pixels ou en pourcentage */
+}
+
+/* Assurez-vous que la barre latérale reste visible même sur les petits écrans */
+@media (max-width: 768px) {
+    .sidebar {
+        flex-basis: 100%; /* Sur les écrans plus petits, la barre latérale occupe toute la largeur disponible */
+    }
+}
+
+/* Ajustez le reste des styles CSS selon vos besoins */
