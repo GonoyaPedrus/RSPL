@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+    <link href="{{ url_for('static', path='style_inscription.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="signup-container">
+        <h2>Inscription</h2>
+        <form id="signup-form">
+            <input type="text" id="username" name="username" placeholder="Username" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="submit" value="Sign Up">
+        </form>
+    </div>
+    <script>
+        const form = document.getElementById('signup-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+            const response = await fetch('/inscription', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            });
+            const responseData = await response.json();
+            console.log(responseData);
+            window.location.href = '/login';
+        });
+    </script>
+</body>
+</html>

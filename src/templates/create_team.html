@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Team</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='style_create.css') }}">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3">
+                <div class="sidebar">
+                    <h2>Players</h2>
+                    <div id="players-container" class="list-group">
+                        {% for player in joueurs %}
+                            <div class="player list-group-item" draggable="true" data-player-id="{{ player.id }}">
+                                <span>{{ player.Name }}</span>
+                                <span class="element-type">{{ player.element_type }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="team">
+                    <h2>Team</h2>
+                    {% for position in ['FWD', 'MID', 'DEF', 'GK'] %}
+                    <h3>{{ position }}</h3>
+                    <div class="container">
+                        <div class="row">
+                            {% for player in dict_team if player["position"] == position %}
+                                <div class="col-md-3">
+                                    <div class="card" draggable="true">
+                                        <p>{{ player["name"] }}</p>
+                                        <p>{{ player["team"] }}</p>
+                                        <p>{{ player["predicted_performance"] }} points ; valeur : {{ player["cost"] }}</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='script_create.js') }}"></script>
+    <script>
+        // JavaScript code for drag and drop functionality (already provided in the previous response)
+    </script>
+</body>
+</html>
