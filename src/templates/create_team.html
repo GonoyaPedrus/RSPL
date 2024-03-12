@@ -10,46 +10,53 @@
 <body>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="sidebar">
                     <h2>Players</h2>
-                    <div id="players-container" class="list-group">
+                    <div id="players-container" class="container">
                         {% for player in joueurs %}
-                            <div class="player list-group-item" draggable="true" data-player-id="{{ player.id }}">
-                                <span>{{ player.Name }}</span>
-                                <span class="element-type">{{ player.element_type }}</span>
+                            <div class="card player" draggable="true" data-player-id="{{ player.id }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ player.Name }}</h5>
+                                    <p class="card-text">Team: {{ player.team }}</p>
+                                    <p class="card-text">{{ player.predicted_performance }} points</p>
+                                    <p class="card-text">Prix: {{ player.cost }}k£</p>
+                                    <p class="card-text">Position: {{ player.element_type }}</p>
+                                </div>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
-            <div class="col-9">
+
+            <div class="col-md-9">
                 <div class="team">
                     <h2>Team</h2>
-                    {% for position in ['FWD', 'MID', 'DEF', 'GK'] %}
-                    <h3>{{ position }}</h3>
-                    <div class="container">
-                        <div class="row">
-                            {% for player in dict_team if player["position"] == position %}
-                                <div class="col-md-3">
-                                    <div class="card" draggable="true">
-                                        <p>{{ player["name"] }}</p>
-                                        <p>{{ player["team"] }}</p>
-                                        <p>{{ player["predicted_performance"] }} points ; valeur : {{ player["cost"] }}</p>
+                    {% for element_type in ['FWD', 'MID', 'DEF', 'GK'] %}
+                        <h3>{{ element_type }}</h3>
+                        <div class="container">
+                            <div class="row">
+                                {% for player in dict_team if player["element_type"] == element_type %}
+                                    <div class="col-md-3">
+                                        <div class="card team-card" draggable="true">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ player.name }}</h5>
+                                                <p class="card-text">{{ player.team }}</p>
+                                                <p class="card-text">{{ player.predicted_performance }} points</p>
+                                                <p class="card-text">Prix: {{ player.cost }} k£</p>
+                                                <p class="card-text">Position: {{ player.element_type }}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
 
     <script src="{{ url_for('static', path='script_create.js') }}"></script>
-    <script>
-        // JavaScript code for drag and drop functionality (already provided in the previous response)
-    </script>
 </body>
 </html>
