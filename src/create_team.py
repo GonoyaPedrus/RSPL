@@ -42,7 +42,6 @@ def new_saison_player(new_saison,dict_index):
             dict_tmp["predicted_performance"] = 0
             # add v in dict_player["id"]
             dict_player.append(dict_tmp)
-    print(dict_player[:3])
     return dict_player
 
 # Route principale pour afficher la page HTML
