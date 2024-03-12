@@ -32,11 +32,11 @@
 
 /* Ajustez la largeur de la barre latérale pour éviter le chevauchement de l'équipe */
 .sidebar {
-    flex-basis: 250px; /* Définissez la largeur de la barre latérale en pixels ou en pourcentage */
+    flex-basis: 300px; /* Définissez la largeur de la barre latérale en pixels ou en pourcentage */
 }
 
 /* Assurez-vous que la barre latérale reste visible même sur les petits écrans */
-@media (max-width: 768px) {
+@media (max-width: 850px) {
     .sidebar {
         flex-basis: 100%; /* Sur les écrans plus petits, la barre latérale occupe toute la largeur disponible */
     }
