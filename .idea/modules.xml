@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/RSPL.iml" filepath="$PROJECT_DIR$/.idea/RSPL.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Desktop/players/.idea/players.iml" filepath="$PROJECT_DIR$/../Desktop/players/.idea/players.iml" />
     </modules>
   </component>
 </project>
