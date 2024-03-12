@@ -2,3 +2,4 @@ src/reco_lstm.ipynb
 src/reco_xgboost.ipynb
 src/IA.ipynb
 src/gradientBoosting.ipynb
+src/config.json
