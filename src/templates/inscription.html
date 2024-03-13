@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +25,7 @@
             formData.forEach((value, key) => {
                 jsonData[key] = value;
             });
-            const response = await fetch('/inscription', {
+            const response = await fetch('/api/inscription', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -33,7 +34,7 @@
             });
             const responseData = await response.json();
             console.log(responseData);
-            window.location.href = '/login';
+            window.location.href = '/api/login';
         });
     </script>
 </body>

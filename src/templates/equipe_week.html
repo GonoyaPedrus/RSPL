@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,16 +13,53 @@
             font-size: 14px;
             margin: 5px;
         }
+        /* Ajout de styles pour les flèches */
+        .arrow {
+            display: inline-block;
+            font-size: 24px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        /* Ajout de styles pour les boutons */
+        .button-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: beige;
+            color: black;
+            text-decoration: none;
+            margin-left: 10px;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: lightgoldenrodyellow;
+        }
     </style>
 </head>
 <body>
+    <!-- Boutons en haut à droite -->
+    <div class="button-container">
+        <a href="/api/modifier" class="button">Modifier l'équipe</a>
+        <a href="/api/statistique" class="button">Voir les statistiques</a>
+    </div>
+    
     <!-- Compteur affichant les totaux -->
     <div class="counter">
         <p>Total points: {{ total_points }}</p>
         <p>Total value: {{ total_value }}</p>
         <p>Semaine en cours: {{ week_num }}</p>
     </div>
-
+    
+    <!-- Flèches de navigation -->
+    <div>
+        <a class="arrow" href="/api/equipe/{{ week_num - 1 }}">&#x2190;</a>
+        <a class="arrow" href="/api/equipe/{{ week_num + 1 }}">&#x2192;</a>
+    </div>
+    
     <!-- Reste du contenu -->
     <h2>Composition de l'équipe</h2>
     {% for position in ['FWD', 'MID', 'DEF', 'GK'] %}
@@ -30,7 +68,7 @@
             {% for player, stats in dict_stats.items() if player in equipe[position] %}
                 <div class="card">
                     <p>{{ player }}</p>
-                    <p>{{dict_team[player]}}</p>
+                    <p>{{ dict_team[player] }}</p>
                     <p>{{ stats[0] }} points ; valeur : {{ stats[1] }}</p>
                 </div>
             {% endfor %}
