@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{{ url_for('static', path='style_login.css') }}" rel="stylesheet">
     <title>Login Page</title>
-    
 </head>
 <body>
     <div class="login-container">
@@ -16,7 +15,7 @@
             <input type="submit" value="Login">
         </form>
         <div class="signup-link">
-            <a href="/inscription">Sign Up</a>
+            <a href="/api/inscription">Sign Up</a>
         </div>
     </div>
     <script>
@@ -28,7 +27,7 @@
             formData.forEach((value, key) => {
                 jsonData[key] = value;
             });
-            const response = await fetch('/login', {
+            const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -37,6 +36,9 @@
             });
             const responseData = await response.json();
             console.log(responseData);
+            if (response.ok) {
+                window.location.href = '/api/equipe/0';
+            }
         });
     </script>
 </body>
