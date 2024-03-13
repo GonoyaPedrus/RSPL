@@ -8,9 +8,12 @@
     <link rel="stylesheet" href="{{ url_for('static', path='style_create.css') }}">
 </head>
 <body>
+    <div id="remaining-money" class="container-fluid">
+        Argent restant : <span id="remaining-amount"></span> k£
+    </div>
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-3 text-center">
                 <div class="sidebar">
                     <h2>Players</h2>
                     <div id="players-container" class="container">
@@ -29,7 +32,7 @@
                 </div>
             </div>
 
-            <div class="col-md-9">
+            <div class="col-md-9 text-center">
                 <div class="team">
                     <h2>Team</h2>
                     {% for element_type in ['FWD', 'MID', 'DEF', 'GK'] %}
@@ -41,10 +44,10 @@
                                         <div class="card team-card" draggable="true">
                                             <div class="card-body">
                                                 <h5 class="card-title">{{ player.name }}</h5>
-                                                <p class="card-text">{{ player.team }}</p>
-                                                <p class="card-text">{{ player.predicted_performance }} points</p>
-                                                <p class="card-text">Prix: {{ player.cost }} k£</p>
-                                                <p class="card-text">Position: {{ player.element_type }}</p>
+                                                <p class="card-text card-team">Team: {{ player.team }}</p>
+                                                <p class="card-text card-performance">{{ player.predicted_performance }} points</p>
+                                                <p class="card-text card-cost">Prix: {{ player.cost }}k£</p>
+                                                <p class="card-text card-position">Position: {{ player.element_type }}</p>
                                             </div>
                                         </div>
                                     </div>

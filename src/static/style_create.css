@@ -33,6 +33,11 @@
 /* Ajustez la largeur de la barre latérale pour éviter le chevauchement de l'équipe */
 .sidebar {
     flex-basis: 300px; /* Définissez la largeur de la barre latérale en pixels ou en pourcentage */
+    width: 20%; /* Définir la largeur de la barre latérale en pourcentage */
+    min-width: 200px; /* Définir une largeur minimale */
+    max-width: 300px; /* Définir une largeur maximale */
+    height: 100vh; /* Ajustez la hauteur de la barre latérale pour correspondre à la hauteur de la fenêtre */
+    overflow-y: auto; /* Ajoutez un défilement si le contenu dépasse la hauteur de la barre latérale */
 }
 
 /* Assurez-vous que la barre latérale reste visible même sur les petits écrans */
@@ -40,6 +45,23 @@
     .sidebar {
         flex-basis: 100%; /* Sur les écrans plus petits, la barre latérale occupe toute la largeur disponible */
     }
+}
+* {
+    cursor: grab; /* Définir le curseur de base sur 'grab' */
+}
+
+.dragging {
+    cursor: grabbing !important; /* Pendant le glisser-déposer, modifier le curseur en 'grabbing' */
+}
+#remaining-money {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 10px;
+    text-align: center;
+    z-index: 1000; /* Pour s'assurer qu'il est au-dessus de tout le contenu */
 }
 
 /* Ajustez le reste des styles CSS selon vos besoins */
