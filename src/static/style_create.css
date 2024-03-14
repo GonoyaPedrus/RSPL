@@ -64,4 +64,13 @@
     z-index: 1000; /* Pour s'assurer qu'il est au-dessus de tout le contenu */
 }
 
+.search-bar {
+    margin-bottom: 10px;
+    position: relative;
+    z-index: 1; /* Pour s'assurer qu'il est au-dessus de tout le contenu */
+}
+
+.search-bar input, .search-bar select {
+    margin-right: 10px;
+}
 /* Ajustez le reste des styles CSS selon vos besoins */
