@@ -115,21 +115,35 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function saveTeam() {
-        // Récupérer les ID des joueurs de l'équipe
         const playerCards = document.querySelectorAll('.team-card');
-        const playersIds = [];
+        const playersIdsByPosition = {}; // Dictionnaire pour stocker les IDs des joueurs par position
+    
+        // Parcourir toutes les cartes de joueur
         playerCards.forEach(card => {
             const playerId = card.querySelector('.card-id').textContent; // Récupérer l'ID du joueur depuis la carte
-            playersIds.push(playerId); // Ajouter l'ID à la liste des IDs des joueurs
+            const positionElement = card.querySelector('.card-position').textContent; // Sélectionner l'élément qui contient la position du joueur
+            
+            // Vérifier si l'élément de position existe
+            if (positionElement) {
+                const position = positionElement.split(':')[1].trim(); // Extraire la position du joueur depuis l'élément
+                
+                // Vérifier si la position existe déjà dans le dictionnaire, sinon, initialiser un tableau vide
+                if (!playersIdsByPosition[position]) {
+                    playersIdsByPosition[position] = [];
+                }
+                const id = playerId.split(':')[1].trim(); // Récupérer l'ID du joueur
+                // Ajouter l'ID du joueur à la liste correspondante à sa position
+                playersIdsByPosition[position].push(playerId);
+            }
         });
     
-        // Effectuer une requête POST pour sauvegarder l'équipe
+        // Effectuer une requête POST pour sauvegarder l'équipe avec les IDs des joueurs organisés par position
         fetch('/api/create_team', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ players_ids: playersIds }) // Envoyer les IDs des joueurs dans le corps de la requête
+            body: JSON.stringify(playersIdsByPosition) // Envoyer le dictionnaire des IDs des joueurs dans le corps de la requête
         })
         .then(response => {
             if (!response.ok) {
@@ -148,3 +162,4 @@ document.addEventListener('DOMContentLoaded', function () {
     
     
 });
+

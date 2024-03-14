@@ -63,15 +63,37 @@ async def read_root(request: Request):
 
 teams_players_dict = {}  # Dictionnaire pour stocker les associations team_id - joueur_ids
 
+import sqlite3
+from fastapi.responses import JSONResponse
+
 @router.post("/create_team", response_class=JSONResponse)
 async def save_team(request: Request): 
-    try:
-        data = await request.json()
-        players_ids = data.get("players_ids", [])  
-        print("Players IDs:", players_ids)
+    if "user_id" not in request.session:
+        return {"error": "User not logged in"}
+    
+    user_id = request.session["user_id"]
+    
+    data = await request.json()
+    print("Data:", data)
+    
+    # Ouvrir la connexion à la base de données
+    db_connection_team = sqlite3.connect("../database/team_database.db")
+    db_cursor_team = db_connection_team.cursor()
 
-        # Effectuez ici vos opérations avec les IDs des joueurs, comme les enregistrer dans une base de données, etc.
+    # Insérer les IDs des joueurs dans la table de l'équipe
+    for position, ids in data.items():
+        ids_str =   ', '.join(map(str, ids))
+        db_cursor_team.execute(f'''
+            INSERT INTO user_{user_id}_team ({position})
+            VALUES (?)
+        ''', (ids_str,))
+    
+    db_connection_team.commit()  # Valider les changements dans la base de données
+    #db_connection_team.close()  # Fermer la connexion à la base de données
+    #show table
+    db_cursor_team.execute(f"SELECT * FROM user_{user_id}_team")
+    rows = db_cursor_team.fetchall()
+    print(rows)
 
-        return {"message": "Team saved successfully"}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "Team saved successfully"}
