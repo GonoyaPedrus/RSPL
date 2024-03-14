@@ -5,6 +5,19 @@
 </head>
 <body>
     <h1>Statistiques de l'utilisateur</h1>
+    <div class="button-container"></div>
+    <!-- Afficher les graphiques côte à côte -->
+    <div style="display: flex;">
+        <div style="flex: 1;">
+            <h2>Team Value</h2>
+            <img src="data:image/png;base64,{{ image_team_value }}" />
+        </div>
+        <div style="flex: 1;">
+            <h2>User Points</h2>
+            <img src="data:image/png;base64,{{ image_user_points }}" />
+        </div>
+    </div>
+
     <table border="1">
         <tr>
             <th>Semaine</th>

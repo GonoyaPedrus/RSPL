@@ -66,6 +66,7 @@ async def get_inscription(request: Request):
 
 # Route pour gérer l'inscription
 # Route pour gérer l'inscription
+
 @router.post("/inscription")
 async def inscription(signup_form: SignupForm):
     # Insérer les informations d'inscription dans la table person
@@ -91,6 +92,23 @@ async def inscription(signup_form: SignupForm):
     db_cursor.execute(f"INSERT INTO user_{user_id}_stats DEFAULT VALUES")
     db_connection.commit()
 
-    return {"message": "Inscription successful"}
+    # Ouvrir la connexion à la base de données team_database.db
+    db_connection_team = sqlite3.connect("../database/team_database.db")
+    db_cursor_team = db_connection_team.cursor()
 
+    # Créer une nouvelle table de l'équipe pour l'utilisateur
+    db_cursor_team.execute(f'''
+        CREATE TABLE IF NOT EXISTS user_{user_id}_team (
+            FWD BLOB,
+            MID BLOB,
+            DEF BLOB,
+            GK BLOB
+        )
+    ''')
+    db_connection_team.commit()
+
+    # Fermer la connexion à la base de données team_database.db
+    db_connection_team.close()
+
+    return {"message": "Inscription successful"}
     
