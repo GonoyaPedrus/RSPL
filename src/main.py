@@ -14,13 +14,6 @@ app.include_router(stats.router, prefix="/api")
 
 # Ajout du middleware de session
 app.add_middleware(SessionMiddleware, secret_key="azerty")
-@app.middleware("http")
-async def some_middleware(request: Request, call_next):
-    response = await call_next(request)
-    session = request.cookies.get('session')
-    if session:
-        response.set_cookie(key='session', value=request.cookies.get('session'), httponly=True)
-    return response
 # Redirection vers /api/login lors de l'accès à la racine
 @app.get("/")
 async def redirect_to_login():

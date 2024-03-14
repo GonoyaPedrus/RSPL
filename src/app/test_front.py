@@ -135,7 +135,7 @@ print(dict_team_by_player)
 @router.get("/equipe")
 async def get_equipe(request: Request):
     return templates.TemplateResponse("equipe.html", {"request": request, "equipe": equipe})
-@router.get("/equipe/{week_num}")
+@router.get("/equipe/{week_num}", response_class=HTMLResponse)
 async def get_equipe(request: Request, week_num: int):
     # Obtenez les statistiques de la semaine pour l'équipe
     dict_stats = get_stats(week_num, dict_index, dict_team, new_saison)
@@ -147,8 +147,8 @@ async def get_equipe(request: Request, week_num: int):
     print(request.session["week_num"])
     # Mettez à jour les statistiques de l'utilisateur dans sa table de statistiques
     if "user_id" in request.session:
-        user_id = request.session["user_id"] - 1
-        print(f"Updating stats for user {user_id}")
+        user_id = request.session["user_id"]
+        print(request.session)
         # Vérifier si une ligne pour cette semaine existe déjà dans la table
         db_cursor.execute(f"SELECT * FROM user_{user_id}_stats WHERE week = ?", (week_num,))
         existing_row = db_cursor.fetchone()
