@@ -114,37 +114,37 @@ document.addEventListener('DOMContentLoaded', function () {
         return Math.random().toString(36).substr(2, 9); // Génère une chaîne aléatoire de 9 caractères
     }
 
-    // Définir la fonction pour sauvegarder l'équipe
     function saveTeam() {
         // Récupérer les ID des joueurs de l'équipe
         const playerCards = document.querySelectorAll('.team-card');
-        const playersIds = {};
+        const playersIds = [];
         playerCards.forEach(card => {
-            const playerId = card.querySelector('.card-id').textContent; // Correction ici
-            const teamId = document.querySelector('#team-id').textContent;
-            playersIds[playerId] = teamId.toString(); // Convertir en chaîne
+            const playerId = card.querySelector('.card-id').textContent; // Récupérer l'ID du joueur depuis la carte
+            playersIds.push(playerId); // Ajouter l'ID à la liste des IDs des joueurs
         });
-
+    
         // Effectuer une requête POST pour sauvegarder l'équipe
-        fetch('/api/save_team', {
+        fetch('/api/create_team', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ players_ids: playersIds })
+            body: JSON.stringify({ players_ids: playersIds }) // Envoyer les IDs des joueurs dans le corps de la requête
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Gérer la réponse de la sauvegarde (si nécessaire)
-                console.log('Team saved successfully:', data);
-            })
-            .catch(error => {
-                console.error('There was a problem with your fetch operation:', error);
-            });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Gérer la réponse de la sauvegarde (si nécessaire)
+            console.log('Team saved successfully:', data);
+        })
+        .catch(error => {
+            console.error('There was a problem with your fetch operation:', error);
+        });
     }
+    
+    
 });

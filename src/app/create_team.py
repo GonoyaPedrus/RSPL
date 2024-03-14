@@ -2,7 +2,7 @@ import pandas as pd
 import os 
 from fastapi import FastAPI, Request, APIRouter, HTTPException, status
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 from pydantic import BaseModel
@@ -60,19 +60,18 @@ def new_saison_player(new_saison,dict_index):
 async def read_root(request: Request):
     return templates.TemplateResponse("create_team.html", {"request": request, "joueurs": new_saison_player(new_saison,dict_index),"dict_team":dict_team})
 
-class SaveTeamRequest(BaseModel):
-    players_ids: Dict[str, str]  # Dictionnaire joueur_id: team_id
 
 teams_players_dict = {}  # Dictionnaire pour stocker les associations team_id - joueur_ids
 
-@router.post("/save_team")
-async def save_team(team_id: str, request: SaveTeamRequest):  # Ajout du paramètre team_id
-    players_ids = request.players_ids
+@router.post("/create_team", response_class=JSONResponse)
+async def save_team(request: Request): 
+    try:
+        data = await request.json()
+        players_ids = data.get("players_ids", [])  
+        print("Players IDs:", players_ids)
 
-    # Enregistrer les associations team_id - joueur_ids dans le dictionnaire
-    teams_players_dict[team_id] = players_ids
+        # Effectuez ici vos opérations avec les IDs des joueurs, comme les enregistrer dans une base de données, etc.
 
-    print("Team saved with ID:", team_id)
-    print("Players IDs:", players_ids)
-
-    return {"message": "Team saved successfully"}
+        return {"message": "Team saved successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
