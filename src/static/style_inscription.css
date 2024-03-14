@@ -37,3 +37,13 @@ input[type="submit"] {
 input[type="submit"]:hover {
     background-color: #0056b3;
 }
+
+.logo {
+    text-align: center; /* Alignement au centre */
+    padding-top: 20px; /* Espacement au-dessus du logo */
+}
+
+.logo {
+    width: 100px; /* Taille normale du logo */
+    height: auto; /* Hauteur ajustée automatiquement */
+}
