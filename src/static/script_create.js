@@ -159,7 +159,26 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('There was a problem with your fetch operation:', error);
         });
     }
-    
+    // Sélectionner le bouton de recherche
+    var searchButton = document.getElementById("search-button");
+
+    // Ajouter un gestionnaire d'événement de clic au bouton de recherche
+    searchButton.addEventListener("click", function() {
+        // Récupérer la valeur saisie par l'utilisateur dans le champ de recherche
+        var searchInput = document.getElementById("search-input").value;
+
+        // Envoyer la valeur de recherche à votre backend (par exemple via AJAX)
+        fetch('/api/search?query=' + encodeURIComponent(searchInput))
+.then(response => response.json())
+.then(data => {
+    // Manipuler les résultats de recherche ici
+    console.log('Search results:', data);
+})
+.catch(error => {
+    console.error('Error searching:', error);
+});
+
+    });
     
 });
 

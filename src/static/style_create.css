@@ -18,24 +18,40 @@
 .col-9 {
     flex: 1 1 auto; /* Permettez à la partie principale de remplir l'espace restant */
 }
-
-/* Ajustez la hauteur de la barre latérale pour correspondre à la hauteur de la fenêtre */
-.sidebar {
-    height: 100vh;
-    overflow-y: auto;
-}
-
 /* Ajoutez un espace à gauche pour l'équipe pour éviter de chevaucher la barre latérale */
 .team {
     padding-left: 15px; /* Ajustez en fonction de la largeur de la barre latérale */
 }
 
+.button {
+  background-color: #04AA6D; /* Green */
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+.button1 {
+  background-color: white;
+  color: black;
+  border: 2px solid #04AA6D;
+}
+.button1:hover {
+  background-color: #04AA6D;
+  color: white;
+}
 /* Ajustez la largeur de la barre latérale pour éviter le chevauchement de l'équipe */
 .sidebar {
     flex-basis: 300px; /* Définissez la largeur de la barre latérale en pixels ou en pourcentage */
     width: 20%; /* Définir la largeur de la barre latérale en pourcentage */
     min-width: 200px; /* Définir une largeur minimale */
     max-width: 300px; /* Définir une largeur maximale */
+    overflow: hidden; /* Cachez le contenu dépassant */
     height: 100vh; /* Ajustez la hauteur de la barre latérale pour correspondre à la hauteur de la fenêtre */
     overflow-y: auto; /* Ajoutez un défilement si le contenu dépasse la hauteur de la barre latérale */
 }
@@ -53,16 +69,6 @@
 .dragging {
     cursor: grabbing !important; /* Pendant le glisser-déposer, modifier le curseur en 'grabbing' */
 }
-#remaining-money {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #f8f9fa;
-    padding: 10px;
-    text-align: center;
-    z-index: 1000; /* Pour s'assurer qu'il est au-dessus de tout le contenu */
-}
 
 .search-bar {
     margin-bottom: 10px;
@@ -74,3 +80,92 @@
     margin-right: 10px;
 }
 /* Ajustez le reste des styles CSS selon vos besoins */
+
+.card {
+    width: 200px; /* Largeur fixe */
+    height: 300px; /* Hauteur fixe */
+    word-wrap: break-word; /* Le texte se casse pour s'adapter à la taille de la carte */
+}
+
+.sidebar-card {
+    margin-bottom: 15px; /* Ajoute un espace entre chaque carte */
+    padding: 10px; /* Ajoute un espace à l'intérieur de chaque carte */
+}
+
+.card.player,
+.card.team-card {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.card.player .card-body,
+.card.team-card .card-body {
+    padding: 10px;
+}
+
+.card.player h5.card-title,
+.card.team-card h5.card-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.card.player p,
+.card.team-card p {
+    margin: 0;
+}
+
+.card.player .card-text,
+.card.team-card .card-text {
+    font-size: 14px;
+}
+
+.card.player.dragging,
+.card.team-card.dragging {
+    opacity: 0.5;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.card.player,
+.card.team-card {
+    flex: 0 0 calc(25% - 20px);
+}
+
+@media (max-width: 768px) {
+    .card.player,
+    .card.team-card {
+        flex: 0 0 calc(50% - 20px);
+    }
+}
+
+@media (max-width: 576px) {
+    .card.player,
+    .card.team-card {
+        flex: 0 0 calc(100% - 20px);
+    }
+}
+
+#remaining-money {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#remaining-money > * {
+    display: block;
+    margin-bottom: 10px;
+    width: auto;
+}
+
+
