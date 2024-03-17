@@ -64,17 +64,23 @@
     
     <!-- Reste du contenu -->
     <h2>Composition de l'équipe</h2>
+    <h2>Composition de l'équipe</h2>
     {% for position in ['FWD', 'MID', 'DEF', 'GK'] %}
         <h3>{{ position }}</h3>
         <div class="container">
-            {% for player, stats in dict_stats.items() if player in equipe[position] %}
-                <div class="card">
-                    <p>{{ player }}</p>
-                    <p>{{ dict_team[player] }}</p>
-                    <p>{{ stats[0] }} points ; valeur : {{ stats[1] }}</p>
-                </div>
+            
+            {% for player, stats in dict_stats.items() %}
+                {%if position == stats[2] %}
+                    <div class="card">
+                        <p>{{ player }}</p>
+                        <p>{{ stats[3] }}</p>
+                        <p>{{ stats[0] }} points ; valeur : {{ stats[1] }}</p>
+                    </div>
+                {% endif %}
             {% endfor %}
+            
         </div>
     {% endfor %}
+    
 </body>
 </html>
