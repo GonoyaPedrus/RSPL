@@ -175,3 +175,17 @@ async def save_team(request: Request):
 
 
     return {"message": "Team saved successfully"}
+
+
+@router.get("/search", response_class=JSONResponse)
+async def search_players(request: Request, query: str):
+    if not query:
+        return {"error": "Empty search query"}
+
+    # Convertir la requête de recherche en minuscules pour une recherche insensible à la casse
+    query = query.lower()
+
+    # Filtrer les joueurs dont le nom contient le terme de recherche
+    matching_players = [player for player in dict_team if query in player["Name"].lower()]
+
+    return matching_players

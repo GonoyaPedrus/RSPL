@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function () {
     const players = document.querySelectorAll('.player');
     const teamSlots = document.querySelectorAll('.team-card');
@@ -122,18 +123,18 @@ document.addEventListener('DOMContentLoaded', function () {
         playerCards.forEach(card => {
             const playerId = card.querySelector('.card-id').textContent; // Récupérer l'ID du joueur depuis la carte
             const positionElement = card.querySelector('.card-position').textContent; // Sélectionner l'élément qui contient la position du joueur
-    
+            
             // Vérifier si l'élément de position existe
             if (positionElement) {
                 const position = positionElement.split(':')[1].trim(); // Extraire la position du joueur depuis l'élément
-    
+                
                 // Vérifier si la position existe déjà dans le dictionnaire, sinon, initialiser un tableau vide
                 if (!playersIdsByPosition[position]) {
                     playersIdsByPosition[position] = [];
                 }
                 const id = playerId.split(':')[1].trim(); // Récupérer l'ID du joueur
                 // Ajouter l'ID du joueur à la liste correspondante à sa position
-                playersIdsByPosition[position].push(id);
+                playersIdsByPosition[position].push(playerId);
             }
         });
     
@@ -146,17 +147,39 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify(playersIdsByPosition) // Envoyer le dictionnaire des IDs des joueurs dans le corps de la requête
         })
         .then(response => {
-            if (response.ok) {
-                window.location.href = '/api/equipe/0'; // Redirection vers /api/team_week/0 si la requête est réussie
-            } else {
+            if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
+            return response.json();
+        })
+        .then(data => {
+            // Gérer la réponse de la sauvegarde (si nécessaire)
+            console.log('Team saved successfully:', data);
         })
         .catch(error => {
             console.error('There was a problem with your fetch operation:', error);
         });
     }
-    
-    
+    // Sélectionner le bouton de recherche
+    var searchButton = document.getElementById("search-button");
+
+    // Ajouter un gestionnaire d'événement de clic au bouton de recherche
+    searchButton.addEventListener("click", function() {
+        // Récupérer la valeur saisie par l'utilisateur dans le champ de recherche
+        var searchInput = document.getElementById("search-input").value;
+
+        // Envoyer la valeur de recherche à votre backend (par exemple via AJAX)
+        fetch('/api/search?query=' + encodeURIComponent(searchInput))
+.then(response => response.json())
+.then(data => {
+    // Manipuler les résultats de recherche ici
+    console.log('Search results:', data);
+})
+.catch(error => {
+    console.error('Error searching:', error);
+});
+
+    });
     
 });
+
