@@ -122,18 +122,18 @@ document.addEventListener('DOMContentLoaded', function () {
         playerCards.forEach(card => {
             const playerId = card.querySelector('.card-id').textContent; // Récupérer l'ID du joueur depuis la carte
             const positionElement = card.querySelector('.card-position').textContent; // Sélectionner l'élément qui contient la position du joueur
-            
+    
             // Vérifier si l'élément de position existe
             if (positionElement) {
                 const position = positionElement.split(':')[1].trim(); // Extraire la position du joueur depuis l'élément
-                
+    
                 // Vérifier si la position existe déjà dans le dictionnaire, sinon, initialiser un tableau vide
                 if (!playersIdsByPosition[position]) {
                     playersIdsByPosition[position] = [];
                 }
                 const id = playerId.split(':')[1].trim(); // Récupérer l'ID du joueur
                 // Ajouter l'ID du joueur à la liste correspondante à sa position
-                playersIdsByPosition[position].push(playerId);
+                playersIdsByPosition[position].push(id);
             }
         });
     
@@ -146,19 +146,17 @@ document.addEventListener('DOMContentLoaded', function () {
             body: JSON.stringify(playersIdsByPosition) // Envoyer le dictionnaire des IDs des joueurs dans le corps de la requête
         })
         .then(response => {
-            if (!response.ok) {
+            if (response.ok) {
+                window.location.href = '/api/equipe/0'; // Redirection vers /api/team_week/0 si la requête est réussie
+            } else {
                 throw new Error('Network response was not ok');
             }
-            return response.json();
-        })
-        .then(data => {
-            // Gérer la réponse de la sauvegarde (si nécessaire)
-            console.log('Team saved successfully:', data);
         })
         .catch(error => {
             console.error('There was a problem with your fetch operation:', error);
         });
     }
+    
     
     
 });

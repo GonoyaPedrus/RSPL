@@ -12,7 +12,81 @@ router = APIRouter()
 
 templates = Jinja2Templates(directory="templates") 
 new_saison = "2023-24"
-dict_team = [{'name': 'Erling Haaland', 'element_type': 'FWD', 'team': 'Man City', 'cost': 115, 'predicted_performance': 16.540115}, {'name': 'Bruno Miguel Borges Fernandes', 'element_type': 'MID', 'team': 'Man Utd', 'cost': 105, 'predicted_performance': 11.457617}, {'name': 'David De Gea Quintana', 'element_type': 'GK', 'team': 'Man Utd', 'cost': 50, 'predicted_performance': 10.829479}, {'name': 'Alisson Ramses Becker', 'element_type': 'GK', 'team': 'Liverpool', 'cost': 60, 'predicted_performance': 10.573772}, {'name': 'Bruno Borges Fernandes', 'element_type': 'MID', 'team': 'Man Utd', 'cost': 100, 'predicted_performance': 10.408141}, {'name': 'Ivan Toney', 'element_type': 'FWD', 'team': 'Brentford', 'cost': 65, 'predicted_performance': 10.241132}, {'name': 'Cody Gakpo', 'element_type': 'MID', 'team': 'Liverpool', 'cost': 80, 'predicted_performance': 9.668974}, {'name': 'James Maddison', 'element_type': 'MID', 'team': 'Leicester', 'cost': 70, 'predicted_performance': 9.51857}, {'name': 'Kaoru Mitoma', 'element_type': 'MID', 'team': 'Brighton', 'cost': 50, 'predicted_performance': 9.316569}, {'name': 'Romelu Lukaku', 'element_type': 'FWD', 'team': "Chelsea", 'cost': 90, 'predicted_performance': 9.279969}, {'name': 'Andrew Robertson', 'element_type': 'DEF', 'team': "Liverpool", 'cost': 45, 'predicted_performance': 8.692561}, {'name': 'Trent Alexander-Arnold', 'element_type': 'DEF', 'team': "Liverpool", 'cost': 45, 'predicted_performance': 8.22334}, {'name': 'Antonio Rüdiger', 'element_type': 'DEF', 'team': "Chelsea", 'cost': 60, 'predicted_performance': 8.159134}, {'name': 'Rico Henry', 'element_type': 'DEF', 'team': 'Brentford', 'cost': 45, 'predicted_performance': 7.671472}]
+dict_team = [{'name': 'Kai Havertz',
+  'position': 'MID',
+  'team': 'Arsenal',
+  'cost': 71,
+  'predicted_performance': 19.310514668537042},
+ {'name': 'Phil Foden',
+  'position': 'MID',
+  'team': 'Man City',
+  'cost': 81,
+  'predicted_performance': 19.248851617795275},
+ {'name': 'Rodrigo Muniz Carvalho',
+  'position': 'FWD',
+  'team': 'Fulham',
+  'cost': 45,
+  'predicted_performance': 16.305604342547653},
+ {'name': 'Harry Wilson',
+  'position': 'MID',
+  'team': 'Fulham',
+  'cost': 53,
+  'predicted_performance': 16.221667231488183},
+ {'name': 'Timo Werner',
+  'position': 'FWD',
+  'team': 'Spurs',
+  'cost': 63,
+  'predicted_performance': 15.942504463894986},
+ {'name': 'Martin Ødegaard',
+  'position': 'MID',
+  'team': 'Arsenal',
+  'cost': 85,
+  'predicted_performance': 15.890662428901994},
+ {'name': 'Edson Álvarez Velázquez',
+  'position': 'MID',
+  'team': 'West Ham',
+  'cost': 50,
+  'predicted_performance': 15.73184482872646},
+ {'name': 'Ollie Watkins',
+  'position': 'FWD',
+  'team': 'Aston Villa',
+  'cost': 89,
+  'predicted_performance': 15.271087737945109},
+ {'name': 'Mads Roerslev Rasmussen',
+  'position': 'DEF',
+  'team': 'Brentford',
+  'cost': 44,
+  'predicted_performance': 14.026874342855244},
+ {'name': 'Benjamin White',
+  'position': 'DEF',
+  'team': 'Arsenal',
+  'cost': 56,
+  'predicted_performance': 12.656241324713791},
+ {'name': 'Cristian Romero',
+  'position': 'DEF',
+  'team': 'Spurs',
+  'cost': 49,
+  'predicted_performance': 11.461738925893238},
+ {'name': 'Axel Disasi',
+  'position': 'DEF',
+  'team': 'Chelsea',
+  'cost': 49,
+  'predicted_performance': 11.447518012425016},
+ {'name': 'Fabian Schär',
+  'position': 'DEF',
+  'team': 'Newcastle',
+  'cost': 54,
+  'predicted_performance': 10.76548614686531},
+ {'name': 'Alphonse Areola',
+  'position': 'GK',
+  'team': 'West Ham',
+  'cost': 42,
+  'predicted_performance': 9.913099371946307},
+ {'name': 'Caoimhin Kelleher',
+  'position': 'GK',
+  'team': 'Liverpool',
+  'cost': 37,
+  'predicted_performance': 8.669551933556857}]
 def new_saison_player_index(new_saison):
     list_player = os.listdir(f"../data/{new_saison}/players")
     #map list_player for split by  and get first and second name
@@ -80,20 +154,24 @@ async def save_team(request: Request):
     db_connection_team = sqlite3.connect("../database/team_database.db")
     db_cursor_team = db_connection_team.cursor()
 
-    # Insérer les IDs des joueurs dans la table de l'équipe
-    for position, ids in data.items():
-        ids_str =   ', '.join(map(str, ids))
-        db_cursor_team.execute(f'''
-            INSERT INTO user_{user_id}_team ({position})
-            VALUES (?)
-        ''', (ids_str,))
-    
+    # Concaténer les listes d'identifiants pour chaque position en une seule chaîne
+    fwd_ids = ', '.join(data["FWD"])
+    mid_ids = ', '.join(data["MID"])
+    def_ids = ', '.join(data["DEF"])
+    gk_ids = ', '.join(data["GK"])
+
+    # Insérer les tuples d'IDs des joueurs dans la table de l'équipe
+    db_cursor_team.execute(f'''
+        INSERT INTO user_{user_id}_team (FWD, MID, DEF, GK)
+        VALUES (?, ?, ?, ?)
+    ''', (fwd_ids, mid_ids, def_ids, gk_ids))
     db_connection_team.commit()  # Valider les changements dans la base de données
     #db_connection_team.close()  # Fermer la connexion à la base de données
     #show table
     db_cursor_team.execute(f"SELECT * FROM user_{user_id}_team")
     rows = db_cursor_team.fetchall()
     print(rows)
+    
 
 
     return {"message": "Team saved successfully"}
