@@ -13,31 +13,41 @@ db_cursor = db_connection.cursor()
 router = APIRouter()
 
 templates = Jinja2Templates(directory="templates") 
+dict_team = {"FWD":[],
+             "MID":[],
+             "DEF":[],
+             "GK":[],}
 new_saison = "2023-24"
+dict_max = {"FWD":3,
+             "MID":5,
+             "DEF":5,
+             "GK":2,}
+def get_cheapest_players(new_saison, dict_team):
+    print(f"Getting cheapest players for {new_saison}")
+    df = pd.read_csv(f"../data/{new_saison}/cleaned_players.csv")
+    cost = 0
+    for k, v in dict_team.items():
+        df_tmp = df[df["element_type"] == k].sort_values(by=["now_cost"]).head(1)
+        cost += df_tmp["now_cost"].values[0]
+        print(df_tmp["first_name"].values[0])
+        print(df_tmp["second_name"].values[0])
+        name  = df_tmp["first_name"].values[0] + " " + df_tmp["second_name"].values[0]
+        dict_team[k].append(name)
+    print(dict_team)
+    print(cost)
+    return dict_team, cost
 
+def get_best_players(new_saison, dict_team, dict_max,cost ):
+    df = pd.read_csv(f"../data/{new_saison}/cleaned_players.csv")
+    for k, v in dict_max.items():
+        df_tmp = df[df["element_type"] == k].sort_values(by=["total_points"], ascending=False).head(v)
+        for i in range(v-1):
+            name  = df_tmp["first_name"].values[i] + " " + df_tmp["second_name"].values[i]
 
-def new_saison_player_index(new_saison):
-    list_player = os.listdir(f"../data/{new_saison}/players")
-    #map list_player for split by  and get first and second name
-    dict_index = {}
-    for player in list_player:
-        dict_index[player.split("_")[0] + " " + player.split("_")[1]] = player.split("_")[-1]
-
-    return dict_index
-dict_index = new_saison_player_index(new_saison)
-
-def get_id_for_team(table_row, dict_index):
-    dict_team = {}
-    for ids in table_row:
-        id_list = ids.split(', ')  # Diviser la chaîne d'IDs en une liste
-        for id in id_list:
-            for name, player_id in dict_index.items():
-                if player_id == id:
-                      # Ajouter le nom du joueur correspondant à l'ID à la liste
-                    
-                    dict_team[name] = id_list 
-                    break # Associer la liste des noms de joueurs à la liste d'IDs dans le dictionnaire
-    return dict_team 
+            dict_team[k].append(name)
+            cost += df_tmp["now_cost"].values[i]
+    print(dict_team)
+    return dict_team,cost
 
 def new_saison_player(new_saison,dict_team):
     list_player = os.listdir(f"../data/{new_saison}/players")
@@ -60,7 +70,7 @@ def new_saison_player(new_saison,dict_team):
 
                 dict_index[player] = list_player.index(player)
     return dict_index    
-def get_weeks_of_player(dict_index,player, new_saison):
+def get_weeks_of_player(dict_index,player, new_saison, week_num):
     list_player = os.listdir(f"../data/{new_saison}/players")
 
     try : 
@@ -101,21 +111,23 @@ def get_stats(week_num,dict_index,dict_team, new_saison):
     dict_stats = {}
     for position,player in dict_team.items():
         for player in player:
-            df = get_weeks_of_player(dict_index,player, new_saison)
+            df = get_weeks_of_player(dict_index,player, new_saison, week_num)
             if df is False:
                 return False
             else:
                 dict_stats[player] = [df["total_points"].iloc[week_num],df["value"].iloc[week_num]]
     return dict_stats
 
+equipe, cost = get_cheapest_players(new_saison, dict_team)
 
-#dict_index =  new_saison_player(new_saison,dict_team)
+equipe, cost = get_best_players(new_saison, equipe, dict_max,cost)
+dict_index =  new_saison_player(new_saison,dict_team)
 
-#dict_stats = get_stats(0,dict_index,dict_team, new_saison)
-#print(dict_stats)
-#dict_team_by_player = get_team(dict_index,equipe, new_saison)
+dict_stats = get_stats(0,dict_index,dict_team, new_saison)
+print(dict_stats)
+dict_team_by_player = get_team(dict_index,equipe, new_saison)
 
-#print(dict_team_by_player)
+print(dict_team_by_player)
 
 
 
@@ -126,46 +138,34 @@ async def get_equipe(request: Request):
 @router.get("/equipe/{week_num}", response_class=HTMLResponse)
 async def get_equipe(request: Request, week_num: int):
     # Obtenez les statistiques de la semaine pour l'équipe
-    if "user_id" not in request.session:
-        return {"error": "User not logged in"}
-    user_id = request.session["user_id"]
-    # Vérifier si la semaine est définie dans la session
-    request.session["week_num"] = week_num
-
-    
-    # Ouvrir la connexion à la base de données
-    db_connection_team = sqlite3.connect("../database/team_database.db")
-    db_cursor_team = db_connection_team.cursor()
-    #requet sql
-    db_cursor_team.execute(f"SELECT * FROM user_id_team ORDER BY ROWID DESC LIMIT 1;")
-    row = db_cursor_team.fetchall()
-    dict_team = get_id_for_team(row, dict_index)
     dict_stats = get_stats(week_num, dict_index, dict_team, new_saison)
     
     # Calculez le nombre total de points et la valeur totale de l'équipe
     total_points = sum(v[0] for v in dict_stats.values())
     total_value = sum(v[1] for v in dict_stats.values())
-
+    request.session["week_num"] = week_num
+    print(request.session["week_num"])
     # Mettez à jour les statistiques de l'utilisateur dans sa table de statistiques
-    
-    
-    # Vérifier si une ligne pour cette semaine existe déjà dans la table
-    db_cursor.execute(f"SELECT * FROM user_{user_id}_stats WHERE week = ?", (week_num,))
-    existing_row = db_cursor.fetchone()
-    if existing_row:
-        # Si une ligne existe, mettez à jour les valeurs
-        db_cursor.execute(f'''
-            UPDATE user_{user_id}_stats
-            SET money = ?, points = ?
-            WHERE week = ?
-        ''', (int(total_value), int(total_points), week_num))
-    else:
-        # Sinon, insérez une nouvelle ligne
-        db_cursor.execute(f'''
-            INSERT INTO user_{user_id}_stats (week, money, points)
-            VALUES (?, ?, ?)
-        ''', (week_num, int(total_value), int(total_points)))
-    db_connection.commit()
+    if "user_id" in request.session:
+        user_id = request.session["user_id"]
+        print(request.session)
+        # Vérifier si une ligne pour cette semaine existe déjà dans la table
+        db_cursor.execute(f"SELECT * FROM user_{user_id}_stats WHERE week = ?", (week_num,))
+        existing_row = db_cursor.fetchone()
+        if existing_row:
+            # Si une ligne existe, mettez à jour les valeurs
+            db_cursor.execute(f'''
+                UPDATE user_{user_id}_stats
+                SET money = ?, points = ?
+                WHERE week = ?
+            ''', (int(total_value), int(total_points), week_num))
+        else:
+            # Sinon, insérez une nouvelle ligne
+            db_cursor.execute(f'''
+                INSERT INTO user_{user_id}_stats (week, money, points)
+                VALUES (?, ?, ?)
+            ''', (week_num, int(total_value), int(total_points)))
+        db_connection.commit()
 
     #print table user_{user_id}_stats
     rows = db_cursor.execute(f'SELECT * FROM user_{user_id}_stats').fetchall()
@@ -184,3 +184,5 @@ async def get_equipe(request: Request, week_num: int):
     """ 
     if __name__ == "__main__":
         uvicorn.run(app) """
+
+[('355, 117, 127', '675, 373, 297, 504, 143', '307, 290, 190, 103', '289, 291')]
