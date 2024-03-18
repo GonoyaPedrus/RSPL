@@ -9,9 +9,7 @@ from pydantic import BaseModel
 from typing import Dict
 router = APIRouter()
 
-top_players = pd.read_csv("../data/2023-24/top_players.csv")
-top_players.rename(columns={'position': 'element_type'}, inplace=True)
-top_players.rename(columns={'now_cost': 'cost'}, inplace=True)
+
 
 def new_saison_player_index(new_saison):
     list_player = os.listdir(f"../data/{new_saison}/players")
@@ -22,12 +20,14 @@ def new_saison_player_index(new_saison):
 
     return dict_index
 def new_saison_player(new_saison,dict_index):
-    df = pd.read_csv(f"../data/{new_saison}/cleaned_players.csv")
+    top_players = pd.read_csv("../data/2023-24/top_players.csv")
+    top_players.rename(columns={'position': 'element_type'}, inplace=True)
+    top_players.rename(columns={'now_cost': 'cost'}, inplace=True)
     df_2 = pd.read_csv(f"../data/{new_saison}/players_raw.csv")
     df_teams = pd.read_csv(f"../data/{new_saison}/teams.csv")
     #get a liste of player with column first_name and second_name
     list_player = top_players["name"].tolist()
-    liste_element = df["element_type"].tolist()
+    liste_element = top_players["element_type"].tolist()
     dict_player = []
 
     for k,v in dict_index.items():
@@ -60,32 +60,18 @@ def get_weeks_of_player(dict_index,player,id, new_saison):
         print(player)
         return False
 
-def get_stats_player(week_num,dict_id_name,dict_team, new_saison):
-    dict_stats = {}
-    df_id  = pd.read_csv(f"../data/{new_saison}/player_idlist.csv")
-    df_name = pd.read_csv(f"../data/{new_saison}/players_raw.csv")
-    df_team = pd.read_csv(f"../data/{new_saison}/teams.csv")
-    df_position = pd.read_csv(f"../data/{new_saison}/cleaned_players.csv")
-    list_all_player = df_position["first_name"].str.cat(df_position["second_name"], sep=" ").tolist()
-    liste_element = df_position["element_type"].tolist()
-    list_player = list(dict_team.keys())
-    for player,id in dict_team.items():
+def get_value_player(week_num,dict_id_name,player,id, new_saison):
+    
+    df = get_weeks_of_player(dict_id_name,player,id, new_saison)
 
-        df = get_weeks_of_player(dict_id_name,player,id, new_saison)
-
-        if df is not False:
-            df_tmp = df_id[df_id["id"] == int(id)]
-            first_name = df_tmp["first_name"].values[0]
-            second_name = df_tmp["second_name"].values[0]
-            df_tmp_2 = df_name[(df_name["first_name"] == first_name) & (df_name["second_name"] == second_name)]
-            id_team = df_tmp_2["team"].values[0]
-            team = df_team[df_team["id"] == id_team]["name"].values[0]
-            dict_stats[player] = [df["total_points"].iloc[:week_num+1].tolist(),df["value"].iloc[:week_num+1].tolist(),liste_element[list_all_player.index(player)],team]
-
-        else:
-            return False
-    return dict_stats
-def get_equipe(dict_team, new_saison):
+    if df is not False:
+        
+        value = df["value"].iloc[week_num]
+        point = df["total_points"].iloc[week_num]
+    else:
+        return 0
+    return value, point
+def get_equipe(week_num,dict_team, new_saison):
     print("getting team")
     df_id = pd.read_csv(f"../data/{new_saison}/player_idlist.csv")
     list_player = os.listdir(f"../data/{new_saison}/players")
@@ -112,8 +98,9 @@ def get_equipe(dict_team, new_saison):
         df_tmp_2 = df[(df["first_name"] == first_name) & (df["second_name"] == second_name)]
         id_team = df_tmp_2["team"].values[0]
         dict_tmp["team"] = df_team[df_team["id"] == id_team]["name"].values[0]
-        dict_tmp["cost"] = df_tmp_2["cost"].values[0]
-
+        value,point =  get_value_player(week_num,dict_id_name,k,v, new_saison)
+        dict_tmp["cost"] = value
+        dict_tmp["predicted_performance"] = point
         equipe.append(dict_tmp)
 
     return equipe
@@ -150,6 +137,9 @@ async def read_root(request: Request):
     if "user_id" not in request.session:
         return {"error": "User not logged in"}
     user_id = request.session["user_id"]
+    if "week_num" not in request.session:
+        return {"error": "Week number not set"}
+    week_num = request.session["week_num"]
     # Ouvrir la connexion à la base de données
     db_connection_team = sqlite3.connect("../database/team_database.db")
     db_cursor_team = db_connection_team.cursor()
@@ -159,7 +149,7 @@ async def read_root(request: Request):
     print(row)
     dict_team = get_id_for_team(row, dict_id_name)
     print(dict_team)
-    equipe = get_equipe(dict_team, new_saison)
+    equipe = get_equipe(week_num,dict_team, new_saison)
     print(equipe)
     return templates.TemplateResponse("update_team.html",
                                       {"request": request, "joueurs": new_saison_player(new_saison, dict_index),
@@ -178,6 +168,9 @@ async def save_team(request: Request):
         return {"error": "User not logged in"}
 
     user_id = request.session["user_id"]
+    if "week_num" not in request.session:
+        return {"error": "Week number not set"}
+    week_num = request.session["week_num"]
     print("ok")
     data = await request.json()
     print("Data:", data)
@@ -204,7 +197,7 @@ async def save_team(request: Request):
     rows = db_cursor_team.fetchall()
     print(rows)
 
-    return {"message": "Team saved successfully"}
+    return {"message": "Team saved successfully", "week_num": week_num}
 
 
 @router.get("/search", response_class=JSONResponse)
