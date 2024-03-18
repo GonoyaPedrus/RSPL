@@ -86,7 +86,9 @@ document.addEventListener('DOMContentLoaded', function () {
             return 0; // Retourner 0 si aucun nombre n'est trouvé
         }
     }
-
+    function generate_new_team_id() {
+        return Math.random().toString(36).substr(2, 9); // Génère une chaîne aléatoire de 9 caractères
+    }
     // Fonction pour calculer et mettre à jour le coût total de l'équipe
     function updateTeamTotalCost() {
         totalCost = 0; // Réinitialiser le coût total à 0
@@ -103,63 +105,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const remainingMoney = totalBudget - totalCost; // Calculer l'argent restant
         remainingAmountSpan.textContent = remainingMoney; // Afficher l'argent restant
     }
-
-    // Ajouter un gestionnaire d'événements pour le clic sur le bouton "Save"
-    const saveButton = document.getElementById('save-button');
-    saveButton.addEventListener('click', function () {
-        saveTeam(); // Appel de la fonction saveTeam sans argument
-    });
-
-    // Fonction pour générer un nouvel identifiant d'équipe
-    function generate_new_team_id() {
-        return Math.random().toString(36).substr(2, 9); // Génère une chaîne aléatoire de 9 caractères
-    }
-
-    function saveTeam() {
-        const playerCards = document.querySelectorAll('.team-card');
-        const playersIdsByPosition = {}; // Dictionnaire pour stocker les IDs des joueurs par position
     
-        // Parcourir toutes les cartes de joueur
-        playerCards.forEach(card => {
-            const playerId = card.querySelector('.card-id').textContent; // Récupérer l'ID du joueur depuis la carte
-            const positionElement = card.querySelector('.card-position').textContent; // Sélectionner l'élément qui contient la position du joueur
-            
-            // Vérifier si l'élément de position existe
-            if (positionElement) {
-                const position = positionElement.split(':')[1].trim(); // Extraire la position du joueur depuis l'élément
-                
-                // Vérifier si la position existe déjà dans le dictionnaire, sinon, initialiser un tableau vide
-                if (!playersIdsByPosition[position]) {
-                    playersIdsByPosition[position] = [];
-                }
-                const id = playerId.split(':')[1].trim(); // Récupérer l'ID du joueur
-                // Ajouter l'ID du joueur à la liste correspondante à sa position
-                playersIdsByPosition[position].push(playerId);
-            }
-        });
-    
-        // Effectuer une requête POST pour sauvegarder l'équipe avec les IDs des joueurs organisés par position
-        fetch('/api/create_team', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(playersIdsByPosition) // Envoyer le dictionnaire des IDs des joueurs dans le corps de la requête
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Gérer la réponse de la sauvegarde (si nécessaire)
-            console.log('Team saved successfully:', data);
-        })
-        .catch(error => {
-            console.error('There was a problem with your fetch operation:', error);
-        });
-    }
     // Sélectionner le bouton de recherche
     var searchButton = document.getElementById("search-button");
 
@@ -183,3 +129,64 @@ document.addEventListener('DOMContentLoaded', function () {
     
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    const saveButton = document.getElementById('save-button');
+
+    // Ajouter un gestionnaire d'événements pour le clic sur le bouton "Save"
+    saveButton.addEventListener('click', function () {
+        saveTeam(); // Appel de la fonction saveTeam lorsque l'utilisateur clique sur le bouton "Save"
+    });
+
+    function saveTeam() {
+        const playerCards = document.querySelectorAll('.team-card');
+        const playersIdsByPosition = {}; // Dictionnaire pour stocker les IDs des joueurs par position
+    
+        // Parcourir toutes les cartes de joueur
+        playerCards.forEach(card => {
+            const playerId = card.querySelector('.card-id').textContent; // Récupérer l'ID du joueur depuis la carte
+            const positionElement = card.querySelector('.card-position').textContent; // Sélectionner l'élément qui contient la position du joueur
+    
+            // Vérifier si l'élément de position existe et n'est pas vide
+            if (positionElement) {
+                const cleanedPosition = positionElement.replace('POSITION', '').trim(); // Enlever le mot 'POSITION'
+    
+                // Utiliser une expression régulière pour extraire uniquement les nombres de l'ID du joueur
+                const idList = playerId.match(/\d+/g) || []; // Extraire tous les nombres de l'ID
+                const cleanedIds = idList.map(id => id.trim()); // Nettoyer les ID en enlevant les espaces
+    
+                // Vérifier si la position existe déjà dans le dictionnaire, sinon, initialiser un tableau vide
+                if (!playersIdsByPosition[cleanedPosition]) {
+                    playersIdsByPosition[cleanedPosition] = [];
+                }
+    
+                // Ajouter les ID des joueurs à la liste correspondante à leur position
+                playersIdsByPosition[cleanedPosition] = playersIdsByPosition[cleanedPosition].concat(cleanedIds);
+            }
+        });
+    
+        // Effectuer une requête POST pour sauvegarder l'équipe avec les IDs des joueurs organisés par position
+        fetch('/api/create_team', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(playersIdsByPosition) // Envoyer le dictionnaire des IDs des joueurs dans le corps de la requête
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '/api/equipe/0'; // Redirection vers /api/team_week/0 si la requête est réussie
+            } else {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Gérer la réponse de la sauvegarde (si nécessaire)
+            console.log('Team saved successfully:', data);
+        })
+        .catch(error => {
+            console.error('There was a problem with your fetch operation:', error);
+        });
+    }
+    
+});

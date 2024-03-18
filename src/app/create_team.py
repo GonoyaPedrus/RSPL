@@ -13,77 +13,77 @@ router = APIRouter()
 templates = Jinja2Templates(directory="templates") 
 new_saison = "2023-24"
 dict_team = [{'name': 'Kai Havertz',
-  'position': 'MID',
+  'element_type': 'MID',
   'team': 'Arsenal',
   'cost': 71,
   'predicted_performance': 19.310514668537042},
  {'name': 'Phil Foden',
-  'position': 'MID',
+  'element_type': 'MID',
   'team': 'Man City',
   'cost': 81,
   'predicted_performance': 19.248851617795275},
  {'name': 'Rodrigo Muniz Carvalho',
-  'position': 'FWD',
+  'element_type': 'FWD',
   'team': 'Fulham',
   'cost': 45,
   'predicted_performance': 16.305604342547653},
  {'name': 'Harry Wilson',
-  'position': 'MID',
+  'element_type': 'MID',
   'team': 'Fulham',
   'cost': 53,
   'predicted_performance': 16.221667231488183},
  {'name': 'Timo Werner',
-  'position': 'FWD',
+  'element_type': 'FWD',
   'team': 'Spurs',
   'cost': 63,
   'predicted_performance': 15.942504463894986},
  {'name': 'Martin Ødegaard',
-  'position': 'MID',
+  'element_type': 'MID',
   'team': 'Arsenal',
   'cost': 85,
   'predicted_performance': 15.890662428901994},
  {'name': 'Edson Álvarez Velázquez',
-  'position': 'MID',
+  'element_type': 'MID',
   'team': 'West Ham',
   'cost': 50,
   'predicted_performance': 15.73184482872646},
  {'name': 'Ollie Watkins',
-  'position': 'FWD',
+  'element_type': 'FWD',
   'team': 'Aston Villa',
   'cost': 89,
   'predicted_performance': 15.271087737945109},
  {'name': 'Mads Roerslev Rasmussen',
-  'position': 'DEF',
+  'element_type': 'DEF',
   'team': 'Brentford',
   'cost': 44,
   'predicted_performance': 14.026874342855244},
  {'name': 'Benjamin White',
-  'position': 'DEF',
+  'element_type': 'DEF',
   'team': 'Arsenal',
   'cost': 56,
   'predicted_performance': 12.656241324713791},
  {'name': 'Cristian Romero',
-  'position': 'DEF',
+  'element_type': 'DEF',
   'team': 'Spurs',
   'cost': 49,
   'predicted_performance': 11.461738925893238},
  {'name': 'Axel Disasi',
-  'position': 'DEF',
+  'element_type': 'DEF',
   'team': 'Chelsea',
   'cost': 49,
   'predicted_performance': 11.447518012425016},
  {'name': 'Fabian Schär',
-  'position': 'DEF',
+  'element_type': 'DEF',
   'team': 'Newcastle',
   'cost': 54,
   'predicted_performance': 10.76548614686531},
  {'name': 'Alphonse Areola',
-  'position': 'GK',
+  'element_type': 'GK',
   'team': 'West Ham',
   'cost': 42,
   'predicted_performance': 9.913099371946307},
  {'name': 'Caoimhin Kelleher',
-  'position': 'GK',
+  'element_type': 'GK',
   'team': 'Liverpool',
   'cost': 37,
   'predicted_performance': 8.669551933556857}]
@@ -146,15 +146,15 @@ async def save_team(request: Request):
         return {"error": "User not logged in"}
     
     user_id = request.session["user_id"]
-    
+    print("ok")
     data = await request.json()
     print("Data:", data)
-    
+    print(data)
     # Ouvrir la connexion à la base de données
     db_connection_team = sqlite3.connect("../database/team_database.db")
     db_cursor_team = db_connection_team.cursor()
 
-    # Concaténer les listes d'identifiants pour chaque position en une seule chaîne
+    # Concaténer les listes d'identifiants pour chaque element_type en une seule chaîne
     fwd_ids = ', '.join(data["FWD"])
     mid_ids = ', '.join(data["MID"])
     def_ids = ', '.join(data["DEF"])
