@@ -133,7 +133,6 @@ async def get_equipe(request: Request, week_num: int):
     user_id = request.session["user_id"]
     # Vérifier si la semaine est définie dans la session
     request.session["week_num"] = week_num
-
     
     # Ouvrir la connexion à la base de données
     db_connection_team = sqlite3.connect("../database/team_database.db")
