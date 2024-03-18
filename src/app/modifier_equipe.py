@@ -10,6 +10,9 @@ from typing import Dict
 router = APIRouter()
 
 top_players = pd.read_csv("../data/2023-24/top_players.csv")
+top_players.rename(columns={'position': 'element_type'}, inplace=True)
+top_players.rename(columns={'now_cost': 'cost'}, inplace=True)
+
 def new_saison_player_index(new_saison):
     list_player = os.listdir(f"../data/{new_saison}/players")
     #map list_player for split by  and get first and second name
@@ -23,7 +26,7 @@ def new_saison_player(new_saison,dict_index):
     df_2 = pd.read_csv(f"../data/{new_saison}/players_raw.csv")
     df_teams = pd.read_csv(f"../data/{new_saison}/teams.csv")
     #get a liste of player with column first_name and second_name
-    list_player = df["first_name"].str.cat(df["second_name"], sep=" ").tolist()
+    list_player = top_players["name"].tolist()
     liste_element = df["element_type"].tolist()
     dict_player = []
 
@@ -37,7 +40,7 @@ def new_saison_player(new_saison,dict_index):
             dict_tmp["cost"] = df_tmp_2["now_cost"].values[0]
             df_tmp_3 = df_teams[(df_teams["id"] == int(df_tmp_2["team"].values[0]))]
             dict_tmp["team"] = df_tmp_3["name"].values[0]
-            dict_tmp["predicted_performance"] = 0
+            dict_tmp["predicted_performance"] = top_players["predicted_performance"][(top_players["name"] == k)].values[0]
             # add v in dict_player["id"]
             dict_player.append(dict_tmp)
     return dict_player
@@ -46,7 +49,42 @@ templates = Jinja2Templates(directory="templates")
 new_saison = "2023-24"
 dict_index = new_saison_player_index(new_saison)
 dict_player = new_saison_player(new_saison, dict_index)
+def get_weeks_of_player(dict_index,player,id, new_saison):
 
+    try :
+
+        df = pd.read_csv(f"../data/{new_saison}/players/{dict_index[id]}/gw.csv")
+        return df
+    except:
+        print("player not in list")
+        print(player)
+        return False
+
+def get_stats_player(week_num,dict_id_name,dict_team, new_saison):
+    dict_stats = {}
+    df_id  = pd.read_csv(f"../data/{new_saison}/player_idlist.csv")
+    df_name = pd.read_csv(f"../data/{new_saison}/players_raw.csv")
+    df_team = pd.read_csv(f"../data/{new_saison}/teams.csv")
+    df_position = pd.read_csv(f"../data/{new_saison}/cleaned_players.csv")
+    list_all_player = df_position["first_name"].str.cat(df_position["second_name"], sep=" ").tolist()
+    liste_element = df_position["element_type"].tolist()
+    list_player = list(dict_team.keys())
+    for player,id in dict_team.items():
+
+        df = get_weeks_of_player(dict_id_name,player,id, new_saison)
+
+        if df is not False:
+            df_tmp = df_id[df_id["id"] == int(id)]
+            first_name = df_tmp["first_name"].values[0]
+            second_name = df_tmp["second_name"].values[0]
+            df_tmp_2 = df_name[(df_name["first_name"] == first_name) & (df_name["second_name"] == second_name)]
+            id_team = df_tmp_2["team"].values[0]
+            team = df_team[df_team["id"] == id_team]["name"].values[0]
+            dict_stats[player] = [df["total_points"].iloc[:week_num+1].tolist(),df["value"].iloc[:week_num+1].tolist(),liste_element[list_all_player.index(player)],team]
+
+        else:
+            return False
+    return dict_stats
 def get_equipe(dict_team, new_saison):
     print("getting team")
     df_id = pd.read_csv(f"../data/{new_saison}/player_idlist.csv")
@@ -74,6 +112,8 @@ def get_equipe(dict_team, new_saison):
         df_tmp_2 = df[(df["first_name"] == first_name) & (df["second_name"] == second_name)]
         id_team = df_tmp_2["team"].values[0]
         dict_tmp["team"] = df_team[df_team["id"] == id_team]["name"].values[0]
+        dict_tmp["cost"] = df_tmp_2["cost"].values[0]
+
         equipe.append(dict_tmp)
 
     return equipe
