@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
-from app import login2, create_team, test_front, stats
+from app import login2, create_team, test_front, stats, modifier_equipe
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 
@@ -11,6 +11,7 @@ app.include_router(login2.router, prefix="/api")
 app.include_router(create_team.router, prefix="/api")
 app.include_router(test_front.router, prefix="/api")
 app.include_router(stats.router, prefix="/api")
+app.include_router(modifier_equipe.router, prefix="/api")
 
 # Ajout du middleware de session
 app.add_middleware(SessionMiddleware, secret_key="azerty")

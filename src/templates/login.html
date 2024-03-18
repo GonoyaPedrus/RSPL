@@ -41,9 +41,14 @@
             const responseData = await response.json();
             console.log(responseData);
             if (response.ok) {
-                window.location.href = '/api/create_team';
+                if (responseData.message === "Login successful no team created yet") {
+                    window.location.href = '/api/create_team';
+                } else if (responseData.message === "Login successful team created") {
+                    window.location.href = '/api/equipe/0';
+                }
             }
         });
+
     </script>
 </body>
 </html>
