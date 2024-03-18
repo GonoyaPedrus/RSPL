@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiques des joueurs</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .stats-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+
+    .position-stats {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .position-stats h2 {
+        margin-bottom: 10px;
+    }
+
+    .position-stats img {
+        max-width: 800px;
+        height: auto;
+        display: block;
+        margin: auto;
+    }
+
+</style>
+<body>
+
+    <!-- Grille 2x2 pour afficher les images -->
+    <div class="container">
+        <div class="row">
+            {% for position, buffer in image_buffers.items() %}
+            <div class="col-md-6">
+                <div class="position-stats">
+                    <h2>Performances des joueurs ({{ position }})</h2>
+                    <!-- Insérer l'image avec la balise img -->
+                    <img src="data:image/png;base64, {{ buffer }}" alt="Performance des joueurs">
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Importer les scripts Bootstrap -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+</body>
+</html>

@@ -3,10 +3,32 @@
 <head>
     <title>Statistiques de l'utilisateur</title>
     <link rel="shortcut icon" href="/static/Deep_Blue.png" type="image/png">
+    <style>
+        /* Ajout de styles pour les boutons */
+        .button-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: beige;
+            color: black;
+            text-decoration: none;
+            margin-left: 10px;
+            border-radius: 5px;
+        }
+        .button:hover {
+            background-color: lightgoldenrodyellow;
+        }
+    </style>
 </head>
 <body>
     <h1>Statistiques de l'utilisateur</h1>
-    <div class="button-container"></div>
+    <div class="button-container">
+        <a href="/api/statistique_player" class="button">Statistiques Joueurs</a>
+    </div>
     <!-- Afficher les graphiques côte à côte -->
     <div style="display: flex;">
         <div style="flex: 1;">
