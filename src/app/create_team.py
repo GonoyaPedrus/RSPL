@@ -108,6 +108,7 @@ dict_team = get_id_for_team(dict_team,dict_index)
 def new_saison_player(new_saison,dict_index):
     df = pd.read_csv(f"../data/{new_saison}/cleaned_players.csv")
     df_2 = pd.read_csv(f"../data/{new_saison}/players_raw.csv")
+    df_pred = pd.read_csv(f"../data/{new_saison}/last_gw_players.csv")
     df_teams = pd.read_csv(f"../data/{new_saison}/teams.csv")
     #get a liste of player with column first_name and second_name
     list_player = df["first_name"].str.cat(df["second_name"], sep=" ").tolist()
@@ -124,7 +125,7 @@ def new_saison_player(new_saison,dict_index):
             dict_tmp["cost"] = df_tmp_2["now_cost"].values[0]
             df_tmp_3 = df_teams[(df_teams["id"] == int(df_tmp_2["team"].values[0]))]
             dict_tmp["team"] = df_tmp_3["name"].values[0]
-            dict_tmp["predicted_performance"] = 0
+            dict_tmp["predicted_performance"] = df_pred["predicted_performance"][(df_pred["element"] == int(v))].values[0]
             # add v in dict_player["id"]
             dict_player.append(dict_tmp)
     return dict_player
