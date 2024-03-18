@@ -9,6 +9,7 @@ from pydantic import BaseModel
 from typing import Dict
 router = APIRouter()
 
+top_players = pd.read_csv("../data/2023-24/top_players.csv")
 def new_saison_player_index(new_saison):
     list_player = os.listdir(f"../data/{new_saison}/players")
     #map list_player for split by  and get first and second name
