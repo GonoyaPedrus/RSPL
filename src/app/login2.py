@@ -40,7 +40,6 @@ db_connection.commit()
 async def get_login(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
-# Route pour gérer l'authentification
 @router.post("/login")
 async def login(request: Request, login_form: LoginForm):
     # Requête pour vérifier les informations de connexion
@@ -50,9 +49,21 @@ async def login(request: Request, login_form: LoginForm):
         # Stocker l'identifiant de l'utilisateur dans la session
         request.session["user_id"] = result[0]
         print(request.session["user_id"])
-        return {"message": "Login successful"}
+        db_connection_team = sqlite3.connect("../database/team_database.db")
+        db_cursor_team = db_connection_team.cursor()
+        # Vérifier si la table user_{user_id}_team est vide
+        db_cursor_team.execute(f"SELECT COUNT(*) FROM user_{result[0]}_team")
+        team_count = db_cursor_team.fetchone()[0]
+        
+        # Redirection en fonction du contenu de la table
+        if team_count == 0:
+            return {"message": "Login successful no team created yet"}
+        else:
+            return {"message": "Login successful team created"}
+
     else:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+
 
 # Modèle Pydantic pour les données du formulaire d'inscription
 class SignupForm(BaseModel):

@@ -23,6 +23,8 @@
 /* Ajoutez un espace à gauche pour l'équipe pour éviter de chevaucher la barre latérale */
 .team {
     padding-left: 15px; /* Ajustez en fonction de la largeur de la barre latérale */
+    flex-basis: 60%;
+
 }
 
 .button {
@@ -49,22 +51,81 @@
 }
 /* Ajustez la largeur de la barre latérale pour éviter le chevauchement de l'équipe */
 .sidebar {
-    flex-basis: 30%; /* Définissez la largeur de la barre latérale en pourcentage */
-    min-width: 200px; /* Définir une largeur minimale */
-    max-width: 30%; /* Définir une largeur maximale */
-    overflow: hidden; /* Cachez le contenu dépassant */
-    height: 100vh; /* Ajustez la hauteur de la barre latérale pour correspondre à la hauteur de la fenêtre */
-    overflow-y: auto; /* Ajoutez un défilement si le contenu dépasse la hauteur de la barre latérale */
+    flex-basis: 40%;
+    min-width: 250px;
+    max-width: 40%;
+    overflow: hidden;
+    height: 100vh;
+    overflow-y: auto;
+    position: fixed;
 }
 
+/* Assurez-vous que la barre latérale reste visible même sur les petits écrans */
 /* Assurez-vous que la barre latérale reste visible même sur les petits écrans */
 @media (max-width: 850px) {
     .sidebar {
         flex-basis: 100%; /* Sur les écrans plus petits, la barre latérale occupe toute la largeur disponible */
+        max-width: 100%; /* Ajustez la largeur maximale pour occuper toute la largeur */
     }
 }
 * {
     cursor: grab; /* Définir le curseur de base sur 'grab' */
+}
+
+.sidebar-container {
+    display: flex;
+}
+.sidebar-card {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    word-wrap: break-word; /* Le texte se casse pour s'adapter à la taille de la carte */
+
+}
+
+.sidebar-card .card-body {
+    padding: 10px;
+}
+
+.sidebar-card h5.card-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.sidebar-card p {
+    margin: 0;
+}
+
+.sidebar-card .card-text {
+    font-size: 14px;
+}
+
+.sidebar-card.dragging {
+    opacity: 0.5;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.sidebar-card {
+    flex: 0 0 calc(25% - 20px);
+}
+
+@media (max-width: 768px) {
+    .sidebar-card {
+        flex: 0 0 calc(50% - 20px);
+    }
+}
+
+@media (max-width: 576px) {
+    .sidebar-card {
+        flex: 0 0 calc(100% - 20px);
+    }
 }
 
 .dragging {
@@ -86,11 +147,6 @@
     width: 200px; /* Largeur fixe */
     height: 300px; /* Hauteur fixe */
     word-wrap: break-word; /* Le texte se casse pour s'adapter à la taille de la carte */
-}
-
-.sidebar-card {
-    margin-bottom: 15px; /* Ajoute un espace entre chaque carte */
-    padding: 10px; /* Ajoute un espace à l'intérieur de chaque carte */
 }
 
 .card.player,
@@ -167,4 +223,10 @@
     display: block;
     margin-bottom: 10px;
     width: auto;
+}
+
+/* Style de mise en surbrillance */
+.highlight {
+    background-color: #f0f0f0; /* Couleur de fond de mise en surbrillance */
+    border-left: 4px solid #007bff; /* Bordure de mise en surbrillance */
 }
