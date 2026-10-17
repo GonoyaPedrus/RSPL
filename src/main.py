@@ -4,6 +4,8 @@ from starlette.middleware.sessions import SessionMiddleware
 from app import login2, create_team, test_front, stats, modifier_equipe
 from fastapi.staticfiles import StaticFiles
 import uvicorn
+import os
+import secrets
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -14,7 +16,7 @@ app.include_router(stats.router, prefix="/api")
 app.include_router(modifier_equipe.router, prefix="/api")
 
 # Ajout du middleware de session
-app.add_middleware(SessionMiddleware, secret_key="azerty")
+app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_SECRET", secrets.token_hex(32)))
 # Redirection vers /api/login lors de l'accès à la racine
 @app.get("/")
 async def redirect_to_login():

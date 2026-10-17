@@ -1,11 +1,13 @@
+import os
+
 import pymysql
 
 # Connexion à la base de données
 db = pymysql.connect(
-    host='database-1.clq2ucwoa2c5.us-east-1.rds.amazonaws.com',
-    port=3306,
-    user='admin',
-    passwd='12345678',
+    host=os.environ['RDS_HOST'],
+    port=int(os.environ.get('RDS_PORT', 3306)),
+    user=os.environ['RDS_USER'],
+    passwd=os.environ['RDS_PASSWORD'],
 )
 
 # Création d'un objet curseur
