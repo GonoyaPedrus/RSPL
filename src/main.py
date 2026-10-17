@@ -16,7 +16,11 @@ app.include_router(stats.router, prefix="/api")
 app.include_router(modifier_equipe.router, prefix="/api")
 
 # Ajout du middleware de session
-app.add_middleware(SessionMiddleware, secret_key=os.environ.get("SESSION_SECRET", secrets.token_hex(32)))
+SESSION_SECRET = os.environ.get("SESSION_SECRET")
+if not SESSION_SECRET:
+    print("SESSION_SECRET non défini : clé aléatoire, les sessions seront perdues au redémarrage")
+    SESSION_SECRET = secrets.token_hex(32)
+app.add_middleware(SessionMiddleware, secret_key=SESSION_SECRET)
 # Redirection vers /api/login lors de l'accès à la racine
 @app.get("/")
 async def redirect_to_login():

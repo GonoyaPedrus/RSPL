@@ -9,3 +9,4 @@ src/config.json
 database/*.db
 __pycache__/
 .DS_Store
+.ipynb_checkpoints/
