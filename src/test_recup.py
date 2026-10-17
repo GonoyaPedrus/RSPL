@@ -1,17 +1,8 @@
 import pandas as pd
 import boto3
-import json
 
-# Charger les informations d'identification à partir du fichier de configuration
-with open('config.json') as f:
-    config = json.load(f)
-
-aws_access_key_id = config['AWS_ACCESS_KEY_ID']
-aws_secret_access_key = config['AWS_SECRET_ACCESS_KEY']
-
-
-#Créer une connexion S3 en utilisant les variables d'environnement
-s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
+# Identifiants AWS lus par boto3 depuis l'environnement (AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY) ou ~/.aws
+s3 = boto3.client('s3')
 
 # Nom du bucket S3
 bucket_name = 'myfplbucket1'

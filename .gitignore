@@ -4,3 +4,9 @@ src/IA.ipynb
 src/gradientBoosting.ipynb
 src/config.json
 
+# Secrets et données locales
+.env
+database/*.db
+__pycache__/
+.DS_Store
+.ipynb_checkpoints/

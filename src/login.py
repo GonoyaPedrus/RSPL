@@ -1,11 +1,13 @@
+import os
+
 import pymysql
 
 # Connexion à la base de données
 db = pymysql.connect(
-    host='***REMOVED***',
-    port=3306,
-    user='admin',
-    passwd='***REMOVED***',
+    host=os.environ['RDS_HOST'],
+    port=int(os.environ.get('RDS_PORT', 3306)),
+    user=os.environ['RDS_USER'],
+    passwd=os.environ['RDS_PASSWORD'],
 )
 
 # Création d'un objet curseur
@@ -37,10 +39,6 @@ cursor.execute(sql)
 sql = "SHOW TABLES"
 cursor.execute(sql)
 print(cursor.fetchall())
-
-# Insertion de données dans la table person
-sql = "INSERT INTO person(username, password) VALUES (%s, %s)"
-cursor.execute(sql, ('victor', 'azerty'))
 
 # Valider la transaction
 db.commit()

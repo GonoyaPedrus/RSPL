@@ -39,6 +39,16 @@ Livraison du Projet:
 •	Présentation finale du projet.
 
 
+## Configuration
+
+Les secrets ne sont plus dans le code. Avant de lancer l'app (`cd src && python main.py`), définir :
+
+- `SESSION_SECRET` : clé de signature des sessions (sinon une clé aléatoire est générée à chaque démarrage).
+- `RDS_HOST`, `RDS_USER`, `RDS_PASSWORD` (et `RDS_PORT`, 3306 par défaut) : uniquement pour le script `src/login.py`.
+- `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` : lus directement par boto3 (ou `~/.aws/credentials`) pour `test.py`, `src/test_recup.py` et `src/RNEQUIPE.ipynb`.
+
+Les bases SQLite de `database/` sont créées en local et ne sont plus versionnées.
+
 ## Rules 
 
 La Fantasy Premier League (FPL) est un jeu en ligne populaire qui permet aux fans de football de créer leur propre équipe de joueurs de la Premier League anglaise et de gagner des points en fonction des performances réelles de ces joueurs au cours de la saison. 
