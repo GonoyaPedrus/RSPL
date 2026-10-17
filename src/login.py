@@ -40,10 +40,6 @@ sql = "SHOW TABLES"
 cursor.execute(sql)
 print(cursor.fetchall())
 
-# Insertion de données dans la table person
-sql = "INSERT INTO person(username, password) VALUES (%s, %s)"
-cursor.execute(sql, ('victor', 'azerty'))
-
 # Valider la transaction
 db.commit()
 sql = """select * from person"""

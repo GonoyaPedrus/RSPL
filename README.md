@@ -45,7 +45,7 @@ Les secrets ne sont plus dans le code. Avant de lancer l'app (`cd src && python 
 
 - `SESSION_SECRET` : clé de signature des sessions (sinon une clé aléatoire est générée à chaque démarrage).
 - `RDS_HOST`, `RDS_USER`, `RDS_PASSWORD` (et `RDS_PORT`, 3306 par défaut) : uniquement pour le script `src/login.py`.
-- `src/config.json` (ignoré par git) : clés AWS pour `src/test_recup.py`.
+- `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` : lus directement par boto3 (ou `~/.aws/credentials`) pour `test.py`, `src/test_recup.py` et `src/RNEQUIPE.ipynb`.
 
 Les bases SQLite de `database/` sont créées en local et ne sont plus versionnées.
 
